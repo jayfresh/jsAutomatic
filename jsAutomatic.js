@@ -11,13 +11,13 @@ possible to provide custom inputs at this point, useful if for instance, the sys
 The last part in the interaction is to create a data string suitable for use by the next interaction.
 
 Creating a new Automatic:
-	var ss = new Automatic(endHandler);
+	var a = new Automatic(endHandler);
 
 where:
 	endHandler is a function to call when the step is done; endHandler is called with the Automatic object as a parameter
 
 Adding a generic step to the Automatic:
-	ss.addStep(name,{
+	a.addStep(name,{
 		url:"http://www.example.com",
 		method:"POST",
 		form:"DefaultForm",
@@ -43,37 +43,37 @@ where:
 	nextStep is the 'name' of the step to use next
 
 Starting off a series of steps: 
-	ss.go(firstStep);
+	a.go(firstStep);
 
 where:
 	firstStep is the value of the 'name' key of the step to start from
 
 Often will want to use some data in the first request, which can come from the current document. If a step does not have a url parameter, the current document will be searched for the form instead. If you provide a userInputs parameter, these will be used even if there is no form parameter. An as example, a pair of steps, starting by pulling data from a form in the document:
-	ss.addStep('a first step', {
+	a.addStep('a first step', {
 		form:'myForm',
 		nextStep:'login'
 	});
-	ss.addStep('login', {
+	a.addStep('login', {
 		url:'http://www.mydomain.com/login',
 		method:'POST'
 	});
-	ss.go('firstStep');
+	a.go('firstStep');
 
 This example illustrates the use of custom inputs in the first step:
-	ss.addStep('another first step', {
+	a.addStep('another first step', {
 		userInputs: {
 			name:'ANOther',
 			password:'password'
 		},
 		nextStep('login')
 	});
-	ss.addStep('login', {
+	a.addStep('login', {
 		url:'http://www.mydomain.com/login',
 		method:'POST'
 	});
 
 Using a custom handler function in a step:
-	ss.addStep('myCustomStep', {
+	a.addStep('myCustomStep', {
 		form:'DefaultForm',
 		userInputs:{
 			test1:'testValue'
@@ -86,7 +86,7 @@ Using a custom handler function in a step:
 handler is called with the keyValuePairs as the first argument, the responseText as the second argument, the doc as the third argument and the Automatic object as the fourth argument
 
 Error handling:
-	ss.addStep('myErrorStep', {
+	a.addStep('myErrorStep', {
 		url:'http://www.doesnotexist.om',
 		errorMessage:'Error in myErrorStep'
 	});
@@ -97,8 +97,8 @@ At the moment, all other errors are handled by throwing exceptions with internal
 
 Branching:
 	function firstBit() {
-		var ss = new Automatic(secondBit);
-		ss.addStep('a first step', {
+		var a = new Automatic(secondBit);
+		a.addStep('a first step', {
 			url:'http://www.example.com/step1',
 			handler:function(keyValuePairs,responseText,doc,scraper) {
 				var skipAStep;
@@ -117,8 +117,8 @@ Branching:
 	function secondBit(params) {
 		var skipAStep = params.skipAStep;
 		var keyValuePairs = params.keyValuePairs;
-		var ss = new Automatic();
-		ss.addStep('handleBranch', {
+		var a = new Automatic();
+		a.addStep('handleBranch', {
 			userInputs:keyValuePairs,
 			url:skipAStep ? http://www.example.com/step3 : http://www.example.com/step2
 		});
@@ -131,8 +131,8 @@ endHandler to the first stage. The first step of the second stage deals uses the
 to call - it could just as easily make a decision about which nextStep to set.
 
 What we really want to be able to do for branching is something like this:
-	var ss = new Automatic();
-	ss.addStep('a first step', {
+	var a = new Automatic();
+	a.addStep('a first step', {
 		url:'http://www.example.com/step1',
 		handler:function() {
 			if(responseText.indexOf('Skip this step')!==-1) {
@@ -143,7 +143,7 @@ What we really want to be able to do for branching is something like this:
 		},
 		nextStep:'my branching step'
 	});
-	ss.addStep('my branching step', {
+	a.addStep('my branching step', {
 		url:stepVars.skipAStep ? http://www.example.com/step3 : http://www.example.com/step2
 	});
 
