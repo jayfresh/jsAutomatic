@@ -1,5 +1,6 @@
 /************************
 * jsAutomatic  *
+* v1.0, 5/8/09 *
 *************************
 
 Description:
@@ -7,7 +8,7 @@ The Automatic object provides methods which allow you to describe a set of inter
 with a remote system that achieves a particular goal, e.g. adding an item to a database. It assumes
 that each interaction is made up of an HTTP request to the remote system, which returns HTML containing
 a form, that itself contains the INPUT elements used to construct the next request to the system. It is
-possible to provide custom inputs at this point, useful if for instance, the system expects human input.
+possible to provide custom inputs at this point, useful if, for instance, the system expects human input.
 The last part in the interaction is to create a data string suitable for use by the next interaction.
 
 Creating a new Automatic:
@@ -48,7 +49,7 @@ Starting off a series of steps:
 where:
 	firstStep is the value of the 'name' key of the step to start from
 
-Often will want to use some data in the first request, which can come from the current document. If a step does not have a url parameter, the current document will be searched for the form instead. If you provide a userInputs parameter, these will be used even if there is no form parameter. An as example, a pair of steps, starting by pulling data from a form in the document:
+Often you will want to use some data in the first request, which can come from the current document. If a step does not have a url parameter, the current document will be searched for the form instead. If you provide a userInputs parameter, these will be used even if there is no form parameter. An as example, a pair of steps, starting by pulling data from a form in the document:
 	a.addStep('a first step', {
 		form:'myForm',
 		nextStep:'login'
@@ -93,8 +94,6 @@ Error handling:
 
 If an exception occurs during the HTTP request for a step, errorMessage will be passed to the Automatic error function along with the exception.
 
-At the moment, all other errors are handled by throwing exceptions with internal information; this will probably change to include step-specific information and be routed through the Automatic error function.
-
 Branching:
 	function firstBit() {
 		var a = new Automatic(secondBit);
@@ -124,10 +123,15 @@ Branching:
 		});
 	}
 
+Future Development ideas
+------------------------
+
+1. Branching
+
 Branching is not currently very easy, but you can do it. By branching, the general case I am referring to is changing the logical
 progression through a series of steps based on the response to a request. The example above illustrates one method of branching, using
 the Automatic object's addEndVars method to set some variables to be passed through to the second stage, which is called as the
-endHandler to the first stage. The first step of the second stage deals uses the passed variables to decided, in this case, which url
+endHandler to the first stage. The first step of the second stage deals uses the passed variables to decide, in this case, which url
 to call - it could just as easily make a decision about which nextStep to set.
 
 What we really want to be able to do for branching is something like this:
@@ -148,7 +152,11 @@ What we really want to be able to do for branching is something like this:
 	});
 
 This is not doable with the current framework, since the variable stepVars.skipAStep used when adding 'my branching step' would be evaluated at the moment of adding the step, not when the step is called, which is the desirable behaviour. A way around this could be to use a function for the second argument of the addStep method, although I have not worked through this idea yet. (22/10/08)
-	
+
+2. use of 'this' in handler functions to represent the Automatic object (5/8/09)
+
+3. At the moment, all errors other than HTTP request errors are handled by throwing exceptions with internal information; this could change to include step-specific information and be routed through the Automatic error function.
+
 */
 
 function Automatic(endHandler,errorHandler) {
@@ -282,6 +290,7 @@ Automatic.prototype.makeRequest = function() {
 		}
 		var that = this;
 		var callback = function(status,params,responseText,url,xhr) {
+			console.log('in callback');
 			that.extractData(responseText);
 		};
 		try {
