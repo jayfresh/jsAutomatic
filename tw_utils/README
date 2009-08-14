@@ -1,0 +1,3 @@
+This folder contains functions from TiddlyWiki (http://www.tiddlywiki.com)
+
+jsAutomator was originally written alongside TiddlyWiki and the tests still depend on some of the functions therein.
