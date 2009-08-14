@@ -26,6 +26,7 @@ HTMLParser = {};
 
 HTMLParser.removeScripts = function (str) {
 	if(str){
+		str = str.replace(/[\n\r]/g,"");
 		str = str.replace(/<script(.*?)>.*?<\/script>/ig,"");
 		str = str.replace(/(onload|onunload)(=.)/ig,"$1$2\/\/");
 	}
@@ -93,7 +94,7 @@ HTMLParser.parseText = function (text,handler,context)
 	var doc = HTMLParser.iframeDocument(iframe);
 	text = HTMLParser.removeScripts(text);
 	doc.open();
-	doc.writeln(text);
+	doc.write(text);
 	doc.close();
 
 	// IE6 and Opera don't support onload event for iframe ..
