@@ -66,7 +66,7 @@ This example illustrates the use of custom inputs in the first step:
 			name:'ANOther',
 			password:'password'
 		},
-		nextStep('login')
+		nextStep: login
 	});
 	a.addStep('login', {
 		url:'http://www.mydomain.com/login',
@@ -128,11 +128,7 @@ Future Development ideas
 
 1. Branching
 
-Branching is not currently very easy, but you can do it. By branching, the general case I am referring to is changing the logical
-progression through a series of steps based on the response to a request. The example above illustrates one method of branching, using
-the Automatic object's addEndVars method to set some variables to be passed through to the second stage, which is called as the
-endHandler to the first stage. The first step of the second stage deals uses the passed variables to decide, in this case, which url
-to call - it could just as easily make a decision about which nextStep to set.
+Branching is not currently very easy, but you can do it. By branching, the general case I am referring to is changing the logical progression through a series of steps based on the response to a request. The example above illustrates one method of branching, using the Automatic object's addEndVars method to set some variables to be passed through to the second stage, which is called as the endHandler to the first stage. The first step of the second stage uses the passed variables to decide, in this case, which url to call - it could just as easily make a decision about which nextStep to set.
 
 What we really want to be able to do for branching is something like this:
 	var a = new Automatic();
